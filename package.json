@@ -1,0 +1,40 @@
+{
+  "name": "bharat_comics_node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tabler/core": "^1.4.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "bootstrap-icons": "^1.13.1",
+    "connect-mongo": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-rate-limit": "^8.5.2",
+    "express-session": "^1.19.0",
+    "helmet": "^8.2.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "mongo-sanitize": "^1.1.0",
+    "mongoose": "^9.5.0",
+    "multer": "^2.1.1",
+    "pg": "^8.20.0",
+    "sharp": "^0.34.5",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

@@ -1,0 +1,168 @@
+<style>
+  .bc-stat-card {
+    border: 1px solid #dbeafe;
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+  }
+
+  .bc-card {
+    border: 1px solid #dbeafe;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 10px 28px rgba(37, 99, 235, 0.07);
+  }
+
+  .bc-card-header {
+    padding: 22px 26px;
+    border-bottom: 1px solid #e5efff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .bc-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .bc-btn {
+    background: #2563eb;
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  .bc-muted {
+    color: #64748b;
+  }
+
+  .bc-list-item {
+    padding: 18px 26px;
+    border-bottom: 1px solid #eef4ff;
+  }
+
+  .bc-list-item:last-child {
+    border-bottom: none;
+  }
+
+  .bc-rank {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #2563eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    margin-right: 12px;
+  }
+
+  .bc-pill {
+    background: #eff6ff;
+    color: #2563eb;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+</style>
+
+<div class="row row-deck row-cards mb-4">
+  <% [
+    ['Total Comics', stats.comicsCount],
+    ['Total Episodes', stats.episodesCount],
+    ['Total Reads', stats.totalReads || 0],
+    ['Total Views', stats.totalViews || 0],
+    ['Users', stats.usersCount],
+    ['Active Today', stats.activeReadersToday || 0]
+  ].forEach(item => { %>
+    <div class="col-sm-6 col-lg-4">
+      <div class="card bc-stat-card">
+        <div class="card-body">
+          <div class="subheader"><%= item[0] %></div>
+          <div class="h1 mb-0 text-primary"><%= item[1] %></div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="bc-card h-100">
+      <div class="bc-card-header">
+        <h3 class="bc-title">Top Trending Comics</h3>
+        <a href="/admin/analytics/trending" class="bc-btn">View All</a>
+      </div>
+
+      <% if (!trendingComics || trendingComics.length === 0) { %>
+        <div class="p-4 bc-muted">No trending data yet.</div>
+      <% } else { %>
+        <% trendingComics.slice(0, 3).forEach((comic, index) => { %>
+          <div class="bc-list-item d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">
+                <span class="bc-rank">#<%= index + 1 %></span>
+                <%= comic.title || 'Untitled Comic' %>
+              </div>
+              <div class="bc-muted mt-2">
+                <%= comic.total_reads || 0 %> reads · <%= comic.total_views || 0 %> views
+              </div>
+            </div>
+            <span class="bc-pill"><%= comic.trending_score || 0 %></span>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="bc-card h-100">
+      <div class="bc-card-header">
+        <h3 class="bc-title">Recent Activity</h3>
+        <a href="/admin/analytics/activity" class="bc-btn">View All</a>
+      </div>
+
+      <% if (!recentActivities || recentActivities.length === 0) { %>
+        <div class="p-4 bc-muted">No activity yet.</div>
+      <% } else { %>
+        <% recentActivities.slice(0, 5).forEach(activity => { %>
+          <div class="bc-list-item d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">
+                User <%= activity.user_id || '-' %>
+                <span class="bc-pill ms-2"><%= activity.activity_type === 'read' ? 'Read' : 'Viewed' %></span>
+              </div>
+              <div class="bc-muted mt-2">
+                <%= activity.comic?.title || '-' %>
+              </div>
+            </div>
+            <small class="bc-muted">
+              <%= new Date(activity.createdAt).toLocaleString() %>
+            </small>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h3 class="bc-title">Quick Actions</h3>
+  </div>
+
+  <div class="p-4 d-flex flex-wrap gap-2">
+    <a href="/admin/comics/add" class="bc-btn">Add Comic</a>
+    <a href="/admin/comics" class="bc-btn">Manage Comics</a>
+    <a href="/admin/analytics/trending" class="bc-btn">View Analytics</a>
+  </div>
+</div>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>KomicsMansion Admin Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Inter", sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 34%),
+      linear-gradient(135deg, #eef5ff 0%, #f8fbff 50%, #eaf2ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: #10213f;
+    overflow: hidden;
+  }
+
+  .auth-shell {
+    width: min(1000px, 94vw);
+    height: min(620px, 92vh);
+    display: grid;
+    grid-template-columns: 42% 58%;
+    background: #ffffff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow:
+      0 24px 70px rgba(15, 23, 42, 0.14),
+      0 10px 26px rgba(37, 99, 235, 0.10);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+  }
+
+  .brand-panel {
+    position: relative;
+    background:
+      linear-gradient(rgba(7, 35, 82, 0.94), rgba(7, 35, 82, 0.98)),
+      radial-gradient(circle at top, rgba(59, 130, 246, 0.32), transparent 36%),
+      linear-gradient(160deg, #08285d, #031b42);
+    color: white;
+    padding: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .brand-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(120deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(30deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 58px 58px;
+    opacity: 0.28;
+  }
+
+  .brand-panel::after {
+    content: "";
+    position: absolute;
+    width: 520px;
+    height: 165px;
+    bottom: -82px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    border-top: 4px solid rgba(37, 99, 235, 0.95);
+    box-shadow: 0 -14px 70px rgba(37, 99, 235, 0.42);
+  }
+
+  .brand-content {
+    position: relative;
+    z-index: 2;
+    max-width: 340px;
+  }
+
+  .brand-logo {
+    width: 205px;
+    max-width: 88%;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.28));
+  }
+
+  .brand-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.6px;
+  }
+
+  .brand-divider {
+    width: 160px;
+    height: 2px;
+    margin: 18px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+  }
+
+  .brand-divider span {
+    width: 9px;
+    height: 9px;
+    background: #3b82f6;
+    transform: rotate(45deg);
+    box-shadow: 0 0 22px rgba(59, 130, 246, 0.95);
+  }
+
+  .brand-copy {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 500;
+  }
+
+  .brand-footer {
+    position: absolute;
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .form-panel {
+    padding: 42px 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at top right, rgba(37, 99, 235, 0.07), transparent 36%),
+      #ffffff;
+  }
+
+  .form-card {
+    width: 100%;
+    max-width: 430px;
+  }
+
+  .form-title {
+    margin: 0;
+    color: #0f2a56;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    font-weight: 800;
+  }
+
+  .form-subtitle {
+    margin: 10px 0 28px;
+    color: #6b7c99;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .alert-error {
+    background: #fff1f2;
+    color: #be123c;
+    border: 1px solid #fecdd3;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .field-group {
+    margin-bottom: 18px;
+  }
+
+  .field-label {
+    display: block;
+    color: #13294b;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    height: 54px;
+    border: 1px solid #d7e0ee;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #ffffff;
+    transition: 0.2s ease;
+  }
+
+  .input-wrap:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+  }
+
+  .input-icon {
+    color: #7183a1;
+    margin-right: 12px;
+    flex: 0 0 auto;
+  }
+
+  .input-wrap input {
+    border: 0;
+    outline: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 14.5px;
+    color: #10213f;
+    font-weight: 600;
+    background: transparent;
+  }
+
+  .input-wrap input::placeholder {
+    color: #8a99b3;
+    font-weight: 500;
+  }
+
+  .password-toggle {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: #7183a1;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px 0 22px;
+    gap: 14px;
+  }
+
+  .remember {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #6b7c99;
+    font-size: 13.5px;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .remember input {
+    width: 17px;
+    height: 17px;
+    accent-color: #2563eb;
+  }
+
+  .forgot {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  .forgot:hover {
+    text-decoration: underline;
+  }
+
+  .login-btn {
+    width: 100%;
+    height: 54px;
+    border: 0;
+    border-radius: 14px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #2f7df7, #145df0);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.2s ease;
+  }
+
+  .login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 36px rgba(37, 99, 235, 0.36);
+  }
+
+  .login-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+    transform: none;
+  }
+
+  .secure-divider {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 14px;
+    margin: 30px 0 20px;
+    color: #7a8ba6;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .secure-divider::before,
+  .secure-divider::after {
+    content: "";
+    height: 1px;
+    background: #dbe4f0;
+  }
+
+  .secure-divider span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+  }
+
+  .notice {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border: 1px solid #d9e4f2;
+    border-radius: 14px;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, #f9fbff, #ffffff);
+    color: #60718d;
+    font-size: 13.5px;
+    line-height: 1.42;
+  }
+
+  .notice strong {
+    display: block;
+    color: #1d355f;
+    margin-bottom: 3px;
+    font-size: 13.5px;
+  }
+
+  .notice-icon {
+    color: #2563eb;
+    flex: 0 0 auto;
+    margin-top: 1px;
+  }
+
+  @media (max-width: 920px) {
+    body {
+      overflow: auto;
+      padding: 18px;
+    }
+
+    .auth-shell {
+      height: auto;
+      min-height: auto;
+      grid-template-columns: 1fr;
+    }
+
+    .brand-panel {
+      min-height: 300px;
+      padding: 34px 24px;
+    }
+
+    .brand-logo {
+      width: 180px;
+      margin-bottom: 18px;
+    }
+
+    .brand-title {
+      font-size: 28px;
+    }
+
+    .brand-copy {
+      font-size: 15px;
+    }
+
+    .brand-footer {
+      position: relative;
+      bottom: auto;
+      margin-top: 28px;
+    }
+
+    .form-panel {
+      padding: 36px 26px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    body {
+      padding: 0;
+      background: #ffffff;
+    }
+
+    .auth-shell {
+      width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .brand-panel {
+      min-height: 260px;
+    }
+
+    .brand-logo {
+      width: 155px;
+    }
+
+    .brand-title {
+      font-size: 25px;
+    }
+
+    .form-title {
+      font-size: 28px;
+    }
+
+    .form-options {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <main class="auth-shell">
+    <section class="brand-panel">
+      <div class="brand-content">
+        <img
+          src="/images/komics_mansion_logo.png"
+          alt="KomicsMansion"
+          class="brand-logo"
+        />
+
+        <h1 class="brand-title">Admin Panel</h1>
+
+        <div class="brand-divider">
+          <span></span>
+        </div>
+
+        <p class="brand-copy">
+          Manage your comics universe<br />
+          with ease and efficiency.
+        </p>
+      </div>
+
+      <div class="brand-footer">
+        © 2026 KomicsMansion. All rights reserved.
+      </div>
+    </section>
+
+    <section class="form-panel">
+      <div class="form-card">
+        <h2 class="form-title">Welcome Back!</h2>
+        <p class="form-subtitle">
+          Sign in to your KomicsMansion admin account
+        </p>
+
+        <% if (error) { %>
+          <div class="alert-error">
+            <%= error %>
+          </div>
+        <% } %>
+
+        <form method="POST" id="loginForm">
+          <div class="field-group">
+            <label class="field-label">Email Address</label>
+            <div class="input-wrap">
+              <svg class="input-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M4 6.5h16v11H4v-11Z" stroke="currentColor" stroke-width="2" />
+                <path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="2" />
+              </svg>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Password</label>
+            <div class="input-wrap">
+              <svg class="input-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+
+              <input
+                id="passwordInput"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              />
+
+              <button class="password-toggle" type="button" onclick="togglePassword()">
+                <svg id="eyeIcon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="remember">
+              <input type="checkbox" name="remember" checked />
+              Remember me
+            </label>
+
+            <a class="forgot" href="javascript:void(0)">Forgot Password?</a>
+          </div>
+
+          <button class="login-btn" type="submit">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" stroke="currentColor" stroke-width="2"/>
+              <path d="M10 17l5-5-5-5" stroke="currentColor" stroke-width="2"/>
+              <path d="M15 12H3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Sign In
+          </button>
+        </form>
+
+        <div class="secure-divider">
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3 20 6v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z" fill="#2563eb"/>
+              <path d="m9 12 2 2 4-5" stroke="white" stroke-width="2"/>
+            </svg>
+            Secure Admin Access
+          </span>
+        </div>
+
+        <div class="notice">
+          <svg class="notice-icon" width="34" height="34" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3 20 6v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z" stroke="currentColor" stroke-width="2"/>
+            <path d="m9 12 2 2 4-5" stroke="currentColor" stroke-width="2"/>
+          </svg>
+
+          <div>
+            <strong>This is a restricted area.</strong>
+            Only authorized administrators can access this panel.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById("passwordInput");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", function () {
+      const btn = this.querySelector(".login-btn");
+      btn.disabled = true;
+      btn.innerHTML = "Signing In...";
+    });
+  </script>
+</body>
+</html>

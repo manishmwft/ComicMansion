@@ -1,0 +1,111 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-1">Coin Packages</h2>
+      <div class="text-secondary">
+        Manage coin purchase packages for Bharat Comics
+      </div>
+    </div>
+
+    <a href="/admin/coin-packages/add" class="btn btn-primary">
+      Add Package
+    </a>
+  </div>
+
+  <% if (!packages || packages.length === 0) { %>
+    <div class="empty-state">
+      <div class="mb-3">
+        <i class="bi bi-cash-stack" style="font-size: 40px;"></i>
+      </div>
+
+      <h3>No coin packages yet</h3>
+
+      <p class="mb-3">
+        Create packages like 100 Coins for ₹29.
+      </p>
+
+      <a href="/admin/coin-packages/add" class="btn btn-primary">
+        Add First Package
+      </a>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Coins</th>
+            <th>Bonus</th>
+            <th>Total Coins</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Sort</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% packages.forEach(pkg => { %>
+            <tr>
+              <td>
+                <div class="fw-bold">
+                  <%= pkg.title %>
+                </div>
+              </td>
+
+              <td>
+                <%= pkg.coins || 0 %>
+              </td>
+
+              <td>
+                <%= pkg.bonus_coins || 0 %>
+              </td>
+
+              <td>
+                <span class="badge bg-blue-lt">
+                  <%= (pkg.coins || 0) + (pkg.bonus_coins || 0) %>
+                </span>
+              </td>
+
+              <td>
+                ₹<%= pkg.price || 0 %>
+              </td>
+
+              <td>
+                <% if (pkg.is_active) { %>
+                  <span class="badge bg-blue-lt">Active</span>
+                <% } else { %>
+                  <span class="badge bg-secondary-lt">Inactive</span>
+                <% } %>
+              </td>
+
+              <td>
+                <%= pkg.sort_order || 0 %>
+              </td>
+
+              <td class="text-end">
+                <a
+                  href="/admin/coin-packages/edit/<%= pkg.id %>"
+                  class="btn btn-sm btn-outline-primary"
+                >
+                  Edit
+                </a>
+
+                <form
+                  method="POST"
+                  action="/admin/coin-packages/delete/<%= pkg.id %>"
+                  class="d-inline"
+                  onsubmit="return confirm('Delete this coin package?')"
+                >
+                  <button class="btn btn-sm btn-outline-danger">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

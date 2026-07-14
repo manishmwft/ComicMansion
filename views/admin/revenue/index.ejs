@@ -1,0 +1,190 @@
+<div class="row row-deck row-cards mb-4">
+  <div class="col-sm-6 col-lg-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">Total Coins Earned</div>
+        <div class="h1 mb-0 text-primary">
+          <%= stats.totalEarned || 0 %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">Total Coins Spent</div>
+        <div class="h1 mb-0 text-primary">
+          <%= stats.totalSpent || 0 %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">Admin Granted Coins</div>
+        <div class="h1 mb-0 text-primary">
+          <%= stats.adminGranted || 0 %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">Episode Unlock Coins</div>
+        <div class="h1 mb-0 text-primary">
+          <%= stats.episodeUnlocks || 0 %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-1">Coin Packages</h2>
+      <div class="text-secondary">
+        Current packages configured for future purchases
+      </div>
+    </div>
+
+    <a href="/admin/coin-packages" class="btn btn-primary">
+      Manage Packages
+    </a>
+  </div>
+
+  <% if (!coinPackages || coinPackages.length === 0) { %>
+    <div class="empty-state">
+      <div class="mb-3">
+        <i class="bi bi-cash-stack" style="font-size: 40px;"></i>
+      </div>
+
+      <h3>No coin packages yet</h3>
+      <p class="mb-3">Create coin packages to prepare for payments.</p>
+
+      <a href="/admin/coin-packages/add" class="btn btn-primary">
+        Add Package
+      </a>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Coins</th>
+            <th>Bonus</th>
+            <th>Total</th>
+            <th>Price</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% coinPackages.forEach(pkg => { %>
+            <tr>
+              <td class="fw-bold">
+                <%= pkg.title %>
+              </td>
+
+              <td>
+                <%= pkg.coins || 0 %>
+              </td>
+
+              <td>
+                <%= pkg.bonus_coins || 0 %>
+              </td>
+
+              <td>
+                <span class="badge bg-blue-lt">
+                  <%= (pkg.coins || 0) + (pkg.bonus_coins || 0) %>
+                </span>
+              </td>
+
+              <td>
+                ₹<%= pkg.price || 0 %>
+              </td>
+
+              <td>
+                <% if (pkg.is_active) { %>
+                  <span class="badge bg-blue-lt">Active</span>
+                <% } else { %>
+                  <span class="badge bg-secondary-lt">Inactive</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <h2 class="mb-1">Recent Coin Transactions</h2>
+      <div class="text-secondary">
+        Latest earning and spending activity
+      </div>
+    </div>
+  </div>
+
+  <% if (!recentTransactions || recentTransactions.length === 0) { %>
+    <div class="card-body text-secondary">
+      No coin transactions yet.
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Source</th>
+            <th>Description</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% recentTransactions.forEach(tx => { %>
+            <tr>
+              <td>
+                <%= tx.user_id || '-' %>
+              </td>
+
+              <td>
+                <span class="badge bg-blue-lt">
+                  <%= tx.type %>
+                </span>
+              </td>
+
+              <td>
+                <%= tx.amount || 0 %>
+              </td>
+
+              <td>
+                <%= tx.source || '-' %>
+              </td>
+
+              <td>
+                <%= tx.description || '-' %>
+              </td>
+
+              <td>
+                <%= new Date(tx.createdAt).toLocaleString() %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

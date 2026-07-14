@@ -1,0 +1,76 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-1">Genre Analytics</h2>
+      <div class="text-secondary">
+        Understand which content categories perform best
+      </div>
+    </div>
+
+    <span class="badge bg-blue-lt text-blue">
+  <%= genreAnalytics.length %> Genres
+</span>
+  </div>
+
+  <% if (!genreAnalytics || genreAnalytics.length === 0) { %>
+    <div class="empty-state">
+      <div class="mb-3">
+        <i class="bi bi-tags" style="font-size: 40px;"></i>
+      </div>
+      <h3 class="mb-2">No genre data yet</h3>
+      <p class="mb-3">Add genres to comics to see analytics here.</p>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Genre</th>
+            <th>Comics</th>
+            <th>Reads</th>
+            <th>Views</th>
+            <th>Avg Reads / Comic</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% genreAnalytics.forEach((item, index) => { %>
+            <tr>
+              <td>
+                <strong>#<%= index + 1 %></strong>
+              </td>
+
+              <td>
+                <span class="fw-bold">
+                  <%= item._id || 'General' %>
+                </span>
+              </td>
+
+              <td>
+                <span class="badge bg-blue-lt">
+                  <%= item.comics || 0 %>
+                </span>
+              </td>
+
+              <td>
+<span class="badge bg-blue-lt">                  <%= item.reads || 0 %>
+                </span>
+              </td>
+
+              <td>
+                <span class="badge bg-blue-lt">
+                  <%= item.views || 0 %>
+                </span>
+              </td>
+
+              <td>
+                <%= item.avg_reads_per_comic || 0 %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

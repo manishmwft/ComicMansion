@@ -1,0 +1,134 @@
+<div class="card">
+
+  <div class="card-header d-flex justify-content-between align-items-center">
+
+    <div>
+      <h2 class="mb-1">
+        Trending Comics
+      </h2>
+
+      <div class="text-secondary">
+        Performance ranking of all comics
+      </div>
+    </div>
+
+  <span class="badge bg-blue-lt ">
+  <%= trendingComics.length %> Comics
+</span>
+
+  </div>
+
+  <div class="table-responsive">
+
+    <table class="table table-vcenter card-table">
+
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cover</th>
+          <th>Comic</th>
+          <th>Reads</th>
+          <th>Views</th>
+          <th>Score</th>
+          <th>Last Read</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+      <% trendingComics.forEach((comic,index)=>{ %>
+
+        <tr>
+
+          <td>
+            <strong>
+              #<%= index+1 %>
+            </strong>
+          </td>
+
+          <td>
+
+            <% if(comic.thumbnail_url){ %>
+
+              <img
+                src="<%= comic.thumbnail_url %>"
+                width="50"
+                height="70"
+                style="
+                  object-fit:cover;
+                  border-radius:10px;
+                "
+              >
+
+            <% } %>
+
+          </td>
+
+          <td>
+
+            <div class="fw-bold">
+              <%= comic.title %>
+            </div>
+
+            <div class="text-secondary small">
+              <%= comic.genre || 'General' %>
+            </div>
+
+          </td>
+
+          <td>
+            <%= comic.total_reads || 0 %>
+          </td>
+
+          <td>
+            <%= comic.total_views || 0 %>
+          </td>
+
+          <td>
+
+        <span class="badge bg-blue-lt text-blue">
+  <%= comic.trending_score || 0 %>
+</span>
+
+          </td>
+
+          <td>
+
+            <% if(comic.last_read_at){ %>
+
+              <%= new Date(
+                    comic.last_read_at
+                  ).toLocaleDateString()
+              %>
+
+            <% } else { %>
+
+              -
+
+            <% } %>
+
+          </td>
+
+          <td>
+
+            <a
+              href="/admin/episodes/<%= comic.id %>"
+              class="btn btn-sm btn-primary"
+            >
+              Open
+            </a>
+
+          </td>
+
+        </tr>
+
+      <% }) %>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

@@ -1,0 +1,113 @@
+<% const selectedPackages = coupon?.applicable_package_ids || []; %>
+<% const dateTimeValue = value => value ? new Date(new Date(value).getTime() - new Date(value).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''; %>
+<div class="card">
+  <div class="card-header"><h2 class="mb-0"><%= coupon?.id ? 'Edit Coupon' : 'Add Coupon' %></h2></div>
+  <div class="card-body">
+    <form method="POST" action="<%= coupon?.id ? '/admin/coupons/edit/' + coupon.id : '/admin/coupons/add' %>">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Coupon Code</label>
+          <input type="text" name="code" class="form-control text-uppercase" maxlength="30" pattern="[A-Za-z0-9_-]{4,30}" placeholder="NAME2026" value="<%= coupon?.code || '' %>" required>
+          <small class="form-hint">Letters, numbers, underscore, and hyphen only.</small>
+        </div>
+        <div class="col-md-8 mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" name="title" class="form-control" maxlength="120" placeholder="Influencer Campaign 2026" value="<%= coupon?.title || '' %>" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="2" maxlength="500"><%= coupon?.description || '' %></textarea>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Discount Type</label>
+          <select name="discount_type" id="discountType" class="form-select" required>
+            <option value="percentage" <%= coupon?.discount_type === 'percentage' ? 'selected' : '' %>>Percentage discount</option>
+            <option value="fixed_amount" <%= coupon?.discount_type === 'fixed_amount' ? 'selected' : '' %>>Fixed amount discount</option>
+            <option value="bonus_coins" <%= coupon?.discount_type === 'bonus_coins' ? 'selected' : '' %>>Bonus coins</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Discount Value</label>
+          <input type="number" name="discount_value" class="form-control" min="0.01" step="0.01" value="<%= coupon?.discount_value || '' %>" required>
+        </div>
+        <div class="col-md-4 mb-3" id="maximumDiscountGroup">
+          <label class="form-label">Maximum Discount (₹)</label>
+          <input type="number" name="maximum_discount_amount" class="form-control" min="0" step="0.01" value="<%= coupon?.maximum_discount_amount ?? '' %>">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Minimum Package Price (₹)</label>
+          <input type="number" name="minimum_purchase_amount" class="form-control" min="0" step="0.01" value="<%= coupon?.minimum_purchase_amount || 0 %>">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Total Usage Limit</label>
+          <input type="number" name="total_usage_limit" class="form-control" min="1" value="<%= coupon?.total_usage_limit ?? '' %>" placeholder="Unlimited">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Usage Limit Per User</label>
+          <input type="number" name="usage_limit_per_user" class="form-control" min="1" value="<%= coupon?.usage_limit_per_user || 1 %>" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Starts At</label>
+          <input type="datetime-local" name="starts_at" class="form-control" value="<%= dateTimeValue(coupon?.starts_at) %>" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Expires At</label>
+          <input type="datetime-local" name="expires_at" class="form-control" value="<%= dateTimeValue(coupon?.expires_at) %>" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Applicable Coin Packages</label>
+        <select name="applicable_package_ids" class="form-select" multiple size="<%= Math.min(Math.max(packages.length, 3), 8) %>">
+          <% packages.forEach(pkg => { %>
+            <option value="<%= pkg.id %>" <%= selectedPackages.includes(pkg.id) ? 'selected' : '' %>><%= pkg.title %> — <%= pkg.coins + (pkg.bonus_coins || 0) %> coins — ₹<%= pkg.price %></option>
+          <% }) %>
+        </select>
+        <small class="form-hint">Leave all unselected to allow this coupon on every active package.</small>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Campaign Name</label>
+          <input type="text" name="campaign_name" class="form-control" value="<%= coupon?.campaign_name || '' %>" placeholder="Creator Growth 2026">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Influencer Name</label>
+          <input type="text" name="influencer_name" class="form-control" value="<%= coupon?.influencer_name || '' %>" placeholder="Creator Name">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Status</label>
+          <select name="is_active" class="form-select">
+            <option value="true" <%= coupon?.is_active !== false ? 'selected' : '' %>>Active</option>
+            <option value="false" <%= coupon?.is_active === false ? 'selected' : '' %>>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <hr>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary"><%= coupon?.id ? 'Update Coupon' : 'Create Coupon' %></button>
+        <a href="/admin/coupons" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  (() => {
+    const type = document.getElementById('discountType');
+    const group = document.getElementById('maximumDiscountGroup');
+    const sync = () => { group.style.display = type.value === 'percentage' ? '' : 'none'; };
+    type.addEventListener('change', sync);
+    sync();
+  })();
+</script>

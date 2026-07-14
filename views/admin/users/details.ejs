@@ -1,0 +1,244 @@
+<div class="row">
+
+  <div class="col-lg-4">
+
+    <div class="card mb-4">
+      <div class="card-body">
+
+        <h2 class="mb-3">
+          <%= user.name || 'Unnamed User' %>
+        </h2>
+
+        <div class="mb-2">
+          <strong>ID:</strong>
+          <%= user.id %>
+        </div>
+
+        <div class="mb-2">
+          <strong>Email:</strong>
+          <%= user.email || '-' %>
+        </div>
+
+        <div class="mb-2">
+          <strong>Mobile:</strong>
+          <%= user.mobile || '-' %>
+        </div>
+
+        <div class="mb-2">
+          <strong>Premium:</strong>
+          <%= user.is_premium ? 'Yes' : 'No' %>
+        </div>
+
+        <div class="mb-2">
+          <strong>Coins:</strong>
+          <%= user.coins || 0 %>
+        </div>
+
+        <div class="mb-2">
+          <strong>XP:</strong>
+          <%= user.xp || 0 %>
+        </div>
+
+        <div class="mb-2">
+          <strong>Level:</strong>
+          <%= user.level || 1 %>
+        </div>
+
+        <div class="mb-2">
+          <strong>Streak:</strong>
+          <%= user.streak || 0 %>
+        </div>
+
+      </div>
+    </div>
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="card-title mb-0">Manage Coins</h3>
+  </div>
+
+  <div class="card-body">
+    <form method="POST" action="/admin/users/<%= user.id %>/coins">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Action</label>
+          <select name="action" class="form-select" required>
+            <option value="add">Add Coins</option>
+            <option value="deduct">Deduct Coins</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Amount</label>
+          <input
+            type="number"
+            name="amount"
+            min="1"
+            class="form-control"
+            placeholder="Enter coins"
+            required
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Reason</label>
+          <input
+            type="text"
+            name="reason"
+            class="form-control"
+            placeholder="Reason"
+          />
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button class="btn btn-primary">
+          Update Coins
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+  </div>
+
+  <div class="col-lg-8">
+
+    <div class="card mb-4">
+      <div class="card-header">
+        Statistics
+      </div>
+
+      <div class="card-body">
+
+        <div class="row">
+
+          <div class="col-md-6">
+            <h2>
+              <%= totalReads %>
+            </h2>
+            Reads
+          </div>
+
+          <div class="col-md-6">
+            <h2>
+              <%= totalViews %>
+            </h2>
+            Views
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+
+      <div class="card-header">
+        Recent Activity
+      </div>
+
+      <div class="table-responsive">
+
+        <table class="table">
+
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Comic</th>
+              <th>Episode</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+          <% activities.forEach(a => { %>
+
+            <tr>
+
+              <td>
+                <%= a.activity_type %>
+              </td>
+
+              <td>
+                <%= a.comic?.title || '-' %>
+              </td>
+
+              <td>
+                <%= a.episode?.title || '-' %>
+              </td>
+
+              <td>
+                <%= new Date(
+                      a.createdAt
+                    ).toLocaleString()
+                %>
+              </td>
+
+            </tr>
+
+          <% }) %>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+  <div class="card mt-4">
+  <div class="card-header">
+    <h3 class="card-title mb-0">Coin History</h3>
+  </div>
+
+  <% if (!coinTransactions || coinTransactions.length === 0) { %>
+    <div class="card-body text-secondary">
+      No coin transactions yet.
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Source</th>
+            <th>Description</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% coinTransactions.forEach(tx => { %>
+            <tr>
+              <td>
+                <span class="badge bg-blue-lt">
+                  <%= tx.type %>
+                </span>
+              </td>
+
+              <td>
+                <%= tx.amount %>
+              </td>
+
+              <td>
+                <%= tx.source %>
+              </td>
+
+              <td>
+                <%= tx.description || '-' %>
+              </td>
+
+              <td>
+                <%= new Date(tx.createdAt).toLocaleString() %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+</div>

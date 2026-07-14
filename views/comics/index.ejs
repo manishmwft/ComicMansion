@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="text-secondary small">Content Management</div>
+    <!-- <h2 class="page-title m-0">Comics</h2> -->
+  </div>
+
+  <a href="/admin/comics/add" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-1"></i>
+    Add Comic
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="w-100 d-flex justify-content-between align-items-center">
+      <h3 class="card-title mb-0">All Comics</h3>
+      <span class="badge bg-blue-lt"><%= comics.length %> total</span>
+    </div>
+  </div>
+
+  <% if (!comics || comics.length === 0) { %>
+    <div class="empty-state">
+      <div class="mb-3">
+        <i class="bi bi-journal-x" style="font-size: 44px;"></i>
+      </div>
+      <h3 class="mb-2">No comics found</h3>
+      <p class="mb-3">Create your first comic to start adding episodes and pages.</p>
+      <a href="/admin/comics/add" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>
+        Create Comic
+      </a>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">Cover</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th style="width: 180px;">Episodes</th>
+            <th class="text-end" style="width: 260px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% comics.forEach(comic => { %>
+            <tr>
+              <td>
+                <% if (comic.thumbnail_url) { %>
+                  <img src="<%= comic.thumbnail_url %>" alt="cover" class="thumb-preview">
+                <% } else { %>
+                  <div class="thumb-preview d-flex align-items-center justify-content-center text-secondary">
+                    <i class="bi bi-image"></i>
+                  </div>
+                <% } %>
+              </td>
+
+              <td>
+                <div class="fw-semibold"><%= comic.title || 'Untitled Comic' %></div>
+                <div class="text-secondary small"><%= comic.id %></div>
+              </td>
+
+              <td class="text-secondary">
+                <%= comic.description && comic.description.length > 100
+                  ? comic.description.substring(0, 100) + '...'
+                  : (comic.description || '-') %>
+              </td>
+
+              <td>
+                <a href="/admin/episodes/<%= comic.id %>" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-collection-play me-1"></i>
+                  View Episodes
+                </a>
+              </td>
+
+              <td class="text-end">
+                <div class="btn-list justify-content-end flex-nowrap">
+                 
+
+                  <a href="/admin/comics/edit/<%= comic.id %>" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Edit
+                  </a>
+
+                  <a href="/admin/comics/delete/<%= comic.id %>"
+                     class="btn btn-outline-danger btn-sm"
+                     onclick="openDeleteModal('<%= comic.id %>', '/admin/comics/delete/')"
+                    <i class="bi bi-trash me-1"></i>
+                    Delete
+                  </a>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

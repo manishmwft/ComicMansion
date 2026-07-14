@@ -1,0 +1,148 @@
+<div class="card">
+
+  <div class="card-header">
+    <h2 class="mb-0">
+      <%= coinPackage?.id ? 'Edit Coin Package' : 'Add Coin Package' %>
+    </h2>
+  </div>
+
+  <div class="card-body">
+
+    <form
+      method="POST"
+      action="<%= coinPackage?.id
+        ? '/admin/coin-packages/edit/' + coinPackage.id
+        : '/admin/coin-packages/add' %>"
+    >
+
+      <div class="row">
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">
+            Package Title
+          </label>
+
+          <input
+            type="text"
+            name="title"
+            class="form-control"
+            placeholder="Starter Pack"
+            value="<%= coinPackage?.title || '' %>"
+            required
+          >
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label class="form-label">
+            Coins
+          </label>
+
+          <input
+            type="number"
+            name="coins"
+            class="form-control"
+            min="1"
+            value="<%= coinPackage?.coins || '' %>"
+            required
+          >
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label class="form-label">
+            Bonus Coins
+          </label>
+
+          <input
+            type="number"
+            name="bonus_coins"
+            class="form-control"
+            min="0"
+            value="<%= coinPackage?.bonus_coins || 0 %>"
+          >
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">
+            Price (₹)
+          </label>
+
+          <input
+            type="number"
+            name="price"
+            class="form-control"
+            min="1"
+            step="0.01"
+            value="<%= coinPackage?.price || '' %>"
+            required
+          >
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">
+            Sort Order
+          </label>
+
+          <input
+            type="number"
+            name="sort_order"
+            class="form-control"
+            value="<%= coinPackage?.sort_order || 0 %>"
+          >
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">
+            Status
+          </label>
+
+          <select
+            name="is_active"
+            class="form-select"
+          >
+            <option
+              value="true"
+              <%= coinPackage?.is_active !== false ? 'selected' : '' %>
+            >
+              Active
+            </option>
+
+            <option
+              value="false"
+              <%= coinPackage?.is_active === false ? 'selected' : '' %>
+            >
+              Inactive
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+      <hr>
+
+      <div class="d-flex gap-2">
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+        >
+          <%= coinPackage?.id ? 'Update Package' : 'Create Package' %>
+        </button>
+
+        <a
+          href="/admin/coin-packages"
+          class="btn btn-outline-secondary"
+        >
+          Cancel
+        </a>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

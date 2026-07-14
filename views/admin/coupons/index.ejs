@@ -1,0 +1,66 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-1">Promotion Coupons</h2>
+      <div class="text-secondary">Manage influencer, seasonal, and marketing coupon campaigns.</div>
+    </div>
+    <a href="/admin/coupons/add" class="btn btn-primary">Add Coupon</a>
+  </div>
+
+  <% if (!coupons || coupons.length === 0) { %>
+    <div class="empty-state">
+      <div class="mb-3"><i class="bi bi-ticket-perforated" style="font-size: 40px;"></i></div>
+      <h3>No coupons yet</h3>
+      <p class="mb-3">Create a code such as NAME2026 or DIWALI30.</p>
+      <a href="/admin/coupons/add" class="btn btn-primary">Create First Coupon</a>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>Code</th><th>Campaign</th><th>Benefit</th><th>Validity</th><th>Usage</th><th>Status</th><th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% coupons.forEach(coupon => { %>
+            <% const expired = new Date(coupon.expires_at) < new Date(); %>
+            <tr>
+              <td><span class="badge bg-blue-lt"><%= coupon.code %></span></td>
+              <td>
+                <div class="fw-bold"><%= coupon.title %></div>
+                <% if (coupon.influencer_name) { %><small class="text-secondary">Influencer: <%= coupon.influencer_name %></small><% } %>
+              </td>
+              <td>
+                <% if (coupon.discount_type === 'percentage') { %>
+                  <%= coupon.discount_value %>% off
+                <% } else if (coupon.discount_type === 'fixed_amount') { %>
+                  ₹<%= coupon.discount_value %> off
+                <% } else { %>
+                  +<%= coupon.discount_value %> bonus coins
+                <% } %>
+              </td>
+              <td>
+                <div><%= new Date(coupon.starts_at).toLocaleDateString('en-IN') %></div>
+                <small class="text-secondary">to <%= new Date(coupon.expires_at).toLocaleDateString('en-IN') %></small>
+              </td>
+              <td><%= coupon.current_usage_count || 0 %> / <%= coupon.total_usage_limit || 'Unlimited' %></td>
+              <td>
+                <% if (expired) { %><span class="badge bg-red-lt">Expired</span>
+                <% } else if (coupon.is_active) { %><span class="badge bg-green-lt">Active</span>
+                <% } else { %><span class="badge bg-secondary-lt">Inactive</span><% } %>
+              </td>
+              <td class="text-end">
+                <a href="/admin/coupons/<%= coupon.id %>/redemptions" class="btn btn-sm btn-outline-secondary">Usage</a>
+                <a href="/admin/coupons/edit/<%= coupon.id %>" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form method="POST" action="/admin/coupons/toggle/<%= coupon.id %>" class="d-inline">
+                  <button class="btn btn-sm btn-outline-warning"><%= coupon.is_active ? 'Disable' : 'Enable' %></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

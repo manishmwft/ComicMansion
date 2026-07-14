@@ -1,0 +1,25 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-1"><%= coupon.code %> Redemptions</h2>
+      <div class="text-secondary"><%= coupon.title %></div>
+    </div>
+    <a href="/admin/coupons" class="btn btn-outline-secondary">Back to Coupons</a>
+  </div>
+  <% if (!redemptions || redemptions.length === 0) { %>
+    <div class="empty-state"><h3>No redemptions yet</h3><p>Usage will appear after successful coin orders are implemented and paid.</p></div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead><tr><th>User</th><th>Package</th><th>Original</th><th>Discount</th><th>Paid</th><th>Bonus Coins</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          <% redemptions.forEach(item => { %>
+            <tr>
+              <td><%= item.user_id %></td><td><%= item.package_id %></td><td>₹<%= item.original_amount %></td><td>₹<%= item.discount_amount %></td><td>₹<%= item.final_amount %></td><td><%= item.bonus_coins || 0 %></td><td><span class="badge bg-blue-lt"><%= item.status %></span></td><td><%= new Date(item.createdAt).toLocaleString('en-IN') %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

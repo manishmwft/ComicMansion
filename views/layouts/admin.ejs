@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>
+    <%= typeof title !== 'undefined' ? title + ' | KomicsMansion Admin' : 'KomicsMansion Admin' %>
+  </title>
+
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --brand-blue: #2563eb;
+      --brand-blue-dark: #1d4ed8;
+      --brand-blue-soft: #eff6ff;
+      --brand-border: #dbeafe;
+      --brand-text: #0f172a;
+      --brand-muted: #64748b;
+      --brand-bg: #f8fbff;
+      --card-bg: #ffffff;
+      --sidebar-width: 280px;
+      --sidebar-collapsed-width: 86px;
+      --sidebar-bg: linear-gradient(180deg, #102f75 0%, #2563eb 100%);
+      --sidebar-text: rgba(255,255,255,0.94);
+      --sidebar-text-soft: rgba(255,255,255,0.72);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--brand-bg);
+      color: var(--brand-text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    .navbar-vertical {
+      width: var(--sidebar-width) !important;
+      background: var(--sidebar-bg) !important;
+      border-right: none !important;
+      box-shadow: 10px 0 34px rgba(37, 99, 235, 0.16);
+      transition: width 0.22s ease;
+      overflow-x: hidden;
+    }
+
+    .page-wrapper {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+      transition: margin-left 0.22s ease;
+    }
+
+    .page-body {
+      padding-bottom: 32px;
+    }
+
+    .km-sidebar-header {
+      height: 92px;
+      padding: 18px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 10px;
+    }
+
+    .km-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      min-width: 0;
+    }
+
+    .km-logo img {
+      width: 158px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.18));
+      transition: width 0.22s ease;
+    }
+
+    .km-sidebar-toggle {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .km-sidebar-toggle:hover {
+      background: rgba(255,255,255,0.22);
+    }
+
+    .navbar-vertical .navbar-nav {
+      padding: 0 10px 20px;
+    }
+
+    .navbar-vertical .nav-link {
+      color: var(--sidebar-text) !important;
+      border-radius: 15px;
+      margin: 6px 0;
+      padding: 12px 14px;
+      transition: all 0.2s ease;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-vertical .nav-link:hover {
+      background: rgba(255,255,255,0.13);
+      color: #fff !important;
+    }
+
+    .navbar-vertical .nav-link.active {
+      background: #ffffff !important;
+      color: var(--brand-blue) !important;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+    }
+
+    .navbar-vertical .nav-link.active .nav-link-icon,
+    .navbar-vertical .nav-link.active .nav-link-title {
+      color: var(--brand-blue) !important;
+    }
+
+    .nav-link-icon {
+      width: 22px;
+      min-width: 22px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nav-link-icon i {
+      font-size: 1.05rem;
+    }
+
+    .nav-link-title {
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .km-submenu-btn {
+      width: 100%;
+      border: 0;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .km-chevron {
+      margin-left: auto;
+      font-size: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .km-menu-group.open .km-chevron {
+      transform: rotate(180deg);
+    }
+
+    .km-submenu {
+      display: none;
+      padding: 3px 0 8px 36px;
+    }
+
+    .km-menu-group.open .km-submenu {
+      display: block;
+    }
+
+    .km-submenu .nav-link {
+      font-size: 14px;
+      padding: 9px 12px;
+      margin: 4px 0;
+      min-height: 38px;
+      border-radius: 12px;
+      color: rgba(255,255,255,0.78) !important;
+    }
+
+    .km-submenu .nav-link:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff !important;
+    }
+
+    .km-submenu .nav-link.active {
+      background: rgba(255,255,255,0.96) !important;
+      color: var(--brand-blue) !important;
+    }
+
+    body.km-sidebar-collapsed .navbar-vertical {
+      width: var(--sidebar-collapsed-width) !important;
+    }
+
+    body.km-sidebar-collapsed .km-logo img {
+      width: 42px;
+    }
+
+    body.km-sidebar-collapsed .nav-link-title,
+    body.km-sidebar-collapsed .km-chevron,
+    body.km-sidebar-collapsed .km-submenu {
+      display: none !important;
+    }
+
+    body.km-sidebar-collapsed .navbar-vertical .nav-link {
+      justify-content: center;
+      padding: 13px;
+    }
+
+    body.km-sidebar-collapsed .km-sidebar-header {
+      justify-content: center;
+      flex-direction: column;
+      height: 118px;
+      gap: 10px;
+      padding: 14px 8px;
+    }
+
+    .navbar.navbar-expand-md {
+      background: rgba(255,255,255,0.84);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e5eefc;
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+
+    .page-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .card {
+      border-radius: 20px;
+      border: 1px solid #e7eefb;
+      background: var(--card-bg);
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.06);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: #ffffff;
+      border-bottom: 1px solid #edf3ff;
+      padding: 18px 22px;
+    }
+
+    .card-title {
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .card-body {
+      padding: 22px;
+    }
+
+    .btn {
+      border-radius: 12px;
+      font-weight: 700;
+      padding: 10px 16px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--brand-blue);
+      border-color: var(--brand-blue);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: var(--brand-blue-dark);
+      border-color: var(--brand-blue-dark);
+    }
+
+    .btn-outline-primary {
+      color: var(--brand-blue);
+      border-color: #bfdbfe;
+      background: #fff;
+    }
+
+    .btn-outline-primary:hover {
+      background: var(--brand-blue);
+      border-color: var(--brand-blue);
+      color: #fff;
+    }
+
+    .btn-outline-secondary {
+      border-color: #dbe4f0;
+      color: #334155;
+      background: #fff;
+    }
+
+    .btn-outline-secondary:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .btn-outline-warning {
+      border-color: #fde68a;
+      color: #b45309;
+      background: #fff;
+    }
+
+    .btn-outline-warning:hover {
+      background: #f59e0b;
+      border-color: #f59e0b;
+      color: #fff;
+    }
+
+    .btn-outline-danger {
+      border-color: #fecaca;
+      color: #dc2626;
+      background: #fff;
+    }
+
+    .btn-outline-danger:hover {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: #fff;
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table thead th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      background: #f8fbff;
+      border-bottom: 1px solid #e6eefc;
+      padding: 14px 16px;
+    }
+
+    .table tbody td {
+      padding: 16px;
+      vertical-align: middle;
+      border-bottom: 1px solid #eef4ff;
+    }
+
+    .table tbody tr:hover {
+      background: #f8fbff;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 800;
+    }
+
+    .bg-blue-lt,
+    .bg-azure-lt {
+      background: #e8f1ff !important;
+      color: var(--brand-blue) !important;
+    }
+
+    .bg-green-lt {
+      background: #eafaf1 !important;
+      color: #15803d !important;
+    }
+
+    .bg-orange-lt {
+      background: #fff4e6 !important;
+      color: #c2410c !important;
+    }
+
+    .subheader,
+    .text-secondary,
+    .form-hint {
+      color: var(--brand-muted) !important;
+    }
+
+    .empty-state {
+      padding: 70px 20px;
+      text-align: center;
+      color: var(--brand-muted);
+    }
+
+    .thumb-preview {
+      width: 68px;
+      height: 68px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid var(--brand-border);
+      background: #fff;
+    }
+
+    .page-image-preview {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 1px solid var(--brand-border);
+      background: #fff;
+    }
+
+    .form-control,
+    .form-select,
+    textarea.form-control {
+      border-radius: 14px;
+      border: 1px solid #dbe7fb;
+      padding: 12px 14px;
+      box-shadow: none;
+    }
+
+    .form-control:focus,
+    .form-select:focus,
+    textarea.form-control:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .toast {
+      border-radius: 14px;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+    }
+
+    .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+    }
+
+    .container-xl {
+      max-width: 1440px;
+    }
+
+    @media (max-width: 991px) {
+      .navbar-vertical {
+        position: relative !important;
+        width: 100% !important;
+      }
+
+      body.km-sidebar-collapsed .navbar-vertical {
+        width: 100% !important;
+      }
+
+      .km-sidebar-header {
+        height: 76px;
+      }
+
+      body.km-sidebar-collapsed .nav-link-title {
+        display: inline !important;
+      }
+      .km-submenu {
+  display: none !important;
+}
+
+.km-menu-group.open .km-submenu {
+  display: block !important;
+}
+
+body.km-sidebar-collapsed .navbar-vertical {
+  width: 86px !important;
+}
+
+body.km-sidebar-collapsed .page-wrapper {
+  margin-left: 86px !important;
+  width: calc(100% - 86px) !important;
+}
+
+body.km-sidebar-collapsed .nav-link-title,
+body.km-sidebar-collapsed .km-chevron,
+body.km-sidebar-collapsed .km-submenu {
+  display: none !important;
+}
+
+      body.km-sidebar-collapsed .navbar-vertical .nav-link {
+        justify-content: flex-start;
+      }
+    }
+    .navbar-vertical {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px !important;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.page-wrapper {
+  margin-left: 260px !important;
+  width: calc(100% - 260px);
+}
+
+body.km-sidebar-collapsed .navbar-vertical {
+  width: 86px !important;
+}
+
+body.km-sidebar-collapsed .page-wrapper {
+  margin-left: 86px !important;
+  width: calc(100% - 86px);
+}
+
+.container-xl {
+  max-width: 100% !important;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+.km-logo img {
+  width: 140px;
+}
+
+body.km-sidebar-collapsed .km-logo img {
+  width: 42px;
+}
+
+@media (max-width: 991px) {
+  .navbar-vertical {
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  .page-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+  </style>
+</head>
+<script src="/js/admin-layout.js"></script>
+
+<body>
+  <div class="page app-shell">
+    <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+      <div class="container-fluid flex-column align-items-stretch p-0">
+
+        <div class="km-sidebar-header">
+          <a href="/admin/dashboard" class="km-logo">
+            <img src="/images/komics_mansion_logo.png" alt="KomicsMansion">
+          </a>
+
+          <button class="km-sidebar-toggle" type="button" id="kmSidebarToggle" title="Collapse sidebar">
+            <i class="bi bi-layout-sidebar-inset"></i>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse show">
+          <ul class="navbar-nav pt-lg-2">
+
+            <li class="nav-item">
+              <a
+                class="nav-link <%= (typeof currentPath !== 'undefined' && currentPath === '/admin/dashboard') ? 'active' : '' %>"
+                href="/admin/dashboard"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="bi bi-grid"></i>
+                </span>
+                <span class="nav-link-title">Dashboard</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link <%= (typeof currentPath !== 'undefined' && currentPath.startsWith('/admin/comics')) ? 'active' : '' %>"
+                href="/admin/comics"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="bi bi-book"></i>
+                </span>
+                <span class="nav-link-title">Comics</span>
+              </a>
+            </li>
+
+            <li class="nav-item km-menu-group <%= (typeof currentPath !== 'undefined' && currentPath.startsWith('/admin/analytics')) ? 'open' : '' %>">
+           <button class="nav-link km-submenu-btn" type="button" data-submenu-toggle>
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="bi bi-bar-chart"></i>
+                </span>
+                <span class="nav-link-title">Analytics</span>
+                <i class="bi bi-chevron-down km-chevron"></i>
+              </button>
+
+              <div class="km-submenu">
+                <a class="nav-link <%= currentPath === '/admin/analytics/trending' ? 'active' : '' %>" href="/admin/analytics/trending">
+                  Trending Comics
+                </a>
+                <a class="nav-link <%= currentPath === '/admin/analytics/episodes' ? 'active' : '' %>" href="/admin/analytics/episodes">
+                  Episode Analytics
+                </a>
+                <a class="nav-link <%= currentPath === '/admin/analytics/genres' ? 'active' : '' %>" href="/admin/analytics/genres">
+                  Genre Analytics
+                </a>
+                <a class="nav-link <%= currentPath === '/admin/analytics/activity' ? 'active' : '' %>" href="/admin/analytics/activity">
+                  Activity Logs
+                </a>
+              </div>
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link <%= currentPath === '/admin/users' ? 'active' : '' %>"
+                href="/admin/users"
+              >
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="bi bi-people"></i>
+                </span>
+                <span class="nav-link-title">Users</span>
+              </a>
+            </li>
+
+            <li class="nav-item km-menu-group <%= (currentPath === '/admin/revenue' || currentPath === '/admin/coin-packages' || currentPath === '/admin/coupons') ? 'open' : '' %>">
+              <button class="nav-link km-submenu-btn" type="button" data-submenu-toggle>
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <i class="bi bi-cash-stack"></i>
+                </span>
+                <span class="nav-link-title">Monetization</span>
+                <i class="bi bi-chevron-down km-chevron"></i>
+              </button>
+
+              <div class="km-submenu">
+                <a class="nav-link <%= currentPath === '/admin/revenue' ? 'active' : '' %>" href="/admin/revenue">
+                  Revenue Analytics
+                </a>
+                <a class="nav-link <%= currentPath === '/admin/coin-packages' ? 'active' : '' %>" href="/admin/coin-packages">
+                  Coin Packages
+                </a>
+                <a class="nav-link <%= currentPath === '/admin/coupons' ? 'active' : '' %>" href="/admin/coupons">
+                  <span class="nav-link-title">Coupons</span>
+                </a>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page-wrapper">
+      <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none">
+        <div class="container-xl">
+          <div class="navbar-nav flex-row order-md-last">
+            <div class="nav-item">
+              <a href="/admin/logout" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-box-arrow-right me-1"></i>
+                Logout
+              </a>
+            </div>
+          </div>
+
+          <div class="collapse navbar-collapse">
+            <div>
+              <h2 class="page-title mb-0">
+                <%= typeof title !== 'undefined' ? title : 'Admin Panel' %>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="container-xl py-3">
+          <%- body %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal modal-blur fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center py-4">
+          <i class="bi bi-trash text-danger" style="font-size: 42px;"></i>
+          <h3 class="mt-3">Are you sure?</h3>
+          <div class="text-secondary">
+            This action cannot be undone.
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger w-100" id="confirmDelete">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+
+ 
+</body>
+</html>

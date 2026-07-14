@@ -1,0 +1,127 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="text-secondary small">
+      <a href="/admin/comics" class="text-decoration-none">Comics</a>
+      <span class="mx-1">/</span>
+      <a href="/admin/pages/<%= episode_id %>" class="text-decoration-none">Pages</a>
+      <span class="mx-1">/</span>
+      <%= page && page.id ? 'Edit' : 'Create' %>
+    </div>
+    <br>
+    <h2 class="page-title m-0">
+      <%= page && page.id ? 'Edit Page' : 'Bulk Add Pages' %>
+    </h2>
+  </div>
+
+  <a href="/admin/pages/<%= episode_id %>" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i>
+    Back
+  </a>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <!-- <h3 class="card-title mb-0">
+            <%= page && page.id ? 'Replace Page Image' : 'Upload Page Images' %>
+          </h3> -->
+        </div>
+
+        <div class="card-body">
+          <% if (page && page.id) { %>
+            <label class="form-label">Page Image</label>
+            <input
+              type="file"
+              name="page_image"
+              class="form-control"
+              accept="image/png,image/jpeg,image/webp"
+              onchange="previewSinglePage(event)"
+            />
+          <% } else { %>
+            <label class="form-label">Page Images</label>
+            <input
+              type="file"
+              name="page_images"
+              class="form-control"
+              accept="image/png,image/jpeg,image/webp"
+              multiple
+              required
+              onchange="previewBulkPages(event)"
+            />
+
+            <div class="form-hint mt-2">
+              Select multiple images. They will be added as pages in selected order.
+            </div>
+          <% } %>
+
+          <div id="bulkPreview" class="row g-3 mt-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 class="card-title mb-0">Current Preview</h3>
+        </div>
+
+        <div class="card-body text-center">
+          <% if (page?.image_url) { %>
+            <img src="<%= page.image_url %>" id="pagePreview" class="page-image-preview" alt="preview">
+          <% } else { %>
+            <div id="pagePreview" class="page-image-preview d-inline-flex align-items-center justify-content-center text-secondary">
+              <i class="bi bi-images"></i>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body d-grid gap-2">
+          <button class="btn btn-primary">
+            <i class="bi bi-check-circle me-1"></i>
+            <%= page?.id ? 'Update Page' : 'Upload Pages' %>
+          </button>
+
+          <a href="/admin/pages/<%= episode_id %>" class="btn btn-outline-secondary">
+            Cancel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+function previewSinglePage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const preview = document.getElementById("pagePreview");
+  preview.outerHTML = `<img src="${URL.createObjectURL(file)}" id="pagePreview" class="page-image-preview" alt="preview">`;
+}
+
+function previewBulkPages(event) {
+  const files = Array.from(event.target.files);
+  const bulkPreview = document.getElementById("bulkPreview");
+  bulkPreview.innerHTML = "";
+
+  files.forEach((file, index) => {
+    const col = document.createElement("div");
+    col.className = "col-6 col-md-4 col-lg-3";
+
+    col.innerHTML = `
+      <div class="card">
+        <div class="card-body text-center p-2">
+          <span class="badge bg-blue-lt mb-2">Page ${index + 1}</span>
+          <img src="${URL.createObjectURL(file)}" class="page-image-preview" />
+        </div>
+      </div>
+    `;
+
+    bulkPreview.appendChild(col);
+  });
+}
+</script>

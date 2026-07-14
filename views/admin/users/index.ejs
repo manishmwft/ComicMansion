@@ -1,0 +1,95 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-1">Users</h2>
+      <div class="text-secondary">
+        Manage registered Bharat Comics readers
+      </div>
+    </div>
+
+    <span class="badge bg-blue-lt">
+      <%= users.length %> Users
+    </span>
+  </div>
+
+  <% if (!users || users.length === 0) { %>
+    <div class="empty-state">
+      <div class="mb-3">
+        <i class="bi bi-people" style="font-size: 40px;"></i>
+      </div>
+
+      <h3>No users yet</h3>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Premium</th>
+            <th>Coins</th>
+            <th>XP</th>
+            <th>Level</th>
+            <th>Streak</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% users.forEach(user => { %>
+            <tr>
+              <td>
+                <span class="badge bg-blue-lt">
+                  <%= user.id || '-' %>
+                </span>
+              </td>
+
+              <td>
+                <div class="fw-bold">
+                  <%= user.name || 'Unnamed User' %>
+                </div>
+                <div class="text-secondary small">
+                  <%= user.email || user.mobile || '-' %>
+                </div>
+              </td>
+
+              <td>
+                <% if (user.is_premium) { %>
+                  <span class="badge bg-blue-lt">Premium</span>
+                <% } else { %>
+                  <span class="badge bg-blue-lt">Free</span>
+                <% } %>
+              </td>
+
+              <td>
+                <%= user.coins || 0 %>
+              </td>
+
+              <td>
+                <%= user.xp || 0 %>
+              </td>
+
+              <td>
+                <%= user.level || 1 %>
+              </td>
+
+              <td>
+                <%= user.streak || 0 %>
+              </td>
+
+              <td class="text-end">
+                <a
+                  href="/admin/users/<%= user.id %>"
+                  class="btn btn-sm btn-primary"
+                >
+                  View
+                </a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

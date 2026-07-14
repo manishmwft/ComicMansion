@@ -1,0 +1,93 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-1">Episode Analytics</h2>
+      <div class="text-secondary">
+        Most read episodes across all comics
+      </div>
+    </div>
+
+    <span class="badge bg-blue-lt text-blue">
+  <%= episodeAnalytics.length %> Episodes
+</span>
+  </div>
+
+  <% if (!episodeAnalytics || episodeAnalytics.length === 0) { %>
+    <div class="empty-state">
+      <div class="mb-3">
+        <i class="bi bi-book-half" style="font-size: 40px;"></i>
+      </div>
+      <h3 class="mb-2">No episode reads yet</h3>
+      <p class="mb-3">Episodes will appear here after users open the reader.</p>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Episode</th>
+            <th>Comic</th>
+            <th>Reads</th>
+            <th>Status</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% episodeAnalytics.forEach((item, index) => { %>
+            <tr>
+              <td>
+                <strong>#<%= index + 1 %></strong>
+              </td>
+
+              <td>
+                <div class="fw-bold">
+                  <%= item.episode?.title || 'Unknown Episode' %>
+                </div>
+                <div class="text-secondary small">
+                  Episode <%= item.episode?.episode_number || '-' %>
+                </div>
+              </td>
+
+              <td>
+                <%= item.comic?.title || '-' %>
+              </td>
+
+              <td>
+               <span class="badge bg-blue-lt text-blue">
+  <%= item.reads || 0 %>
+</span>
+              </td>
+
+              <td>
+              <% if (item.episode?.is_paid) { %>
+  <span class="badge bg-orange-lt text-orange">
+    <i class="bi bi-lock-fill me-1"></i>Paid
+  </span>
+<% } else { %>
+  <span class="badge bg-green-lt text-green">
+    <i class="bi bi-unlock-fill me-1"></i>Free
+  </span>
+<% } %>
+              </td>
+
+              <td class="text-end">
+                <% if (item.episode?.comic_id) { %>
+                  <a
+                    href="/admin/episodes/<%= item.episode.comic_id %>"
+                    class="btn btn-sm btn-primary"
+                  >
+                    Open
+                  </a>
+                <% } else { %>
+                  -
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
