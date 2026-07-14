@@ -40,22 +40,98 @@ if (process.env.NODE_ENV === "production") {
 
 /* ================= CORS ================= */
 
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [
-        process.env.FRONTEND_URL,
-        process.env.ADMIN_URL,
-      ].filter(Boolean)
-    : true;
+const configuredOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.ADMIN_URL,
+]
+  .filter(Boolean)
+  .map((origin) => origin.replace(/\/+$/, ""));
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+function isLocalFlutterWebOrigin(origin) {
+  try {
+    const url = new URL(origin);
+
+    return (
+      url.protocol === "http:" &&
+      (
+        url.hostname === "localhost" ||
+        url.hostname === "127.0.0.1"
+      )
+    );
+  } catch (error) {
+    return false;
+  }
+}
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow requests without an Origin header:
+    // Flutter Android/iOS, Postman, server-to-server requests.
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    const normalizedOrigin =
+      String(origin).replace(/\/+$/, "");
+
+    // Allow configured production domains.
+    if (
+      configuredOrigins.includes(
+        normalizedOrigin
+      )
+    ) {
+      return callback(null, true);
+    }
+
+    // Allow Flutter Web development from any localhost port.
+    if (
+      isLocalFlutterWebOrigin(
+        normalizedOrigin
+      )
+    ) {
+      return callback(null, true);
+    }
+
+    console.warn(
+      "CORS BLOCKED ORIGIN:",
+      normalizedOrigin
+    );
+
+    const error =
+      new Error("Not allowed by CORS");
+
+    error.status = 403;
+
+    return callback(error);
+  },
+
+  credentials: true,
+
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+  ],
+
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Accept",
+    "X-Requested-With",
+  ],
+
+  exposedHeaders: [
+    "Content-Type",
+    "Content-Length",
+  ],
+
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 
 /* ================= BODY PARSER ================= */
 
