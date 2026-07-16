@@ -1,0 +1,34 @@
+<% const toInput = value => value ? new Date(new Date(value).getTime() - new Date(value).getTimezoneOffset() * 60000).toISOString().slice(0,16) : ''; %>
+<div class="card">
+  <div class="card-header"><h2 class="mb-0"><%= promotion?.id ? 'Edit Promotion' : 'Add Promotion' %></h2></div>
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data" action="<%= promotion?.id ? '/admin/promotions/edit/' + promotion.id : '/admin/promotions/add' %>">
+      <div class="row">
+        <div class="col-md-8 mb-3"><label class="form-label">Title</label><input name="title" class="form-control" value="<%= promotion?.title || '' %>" required maxlength="150"></div>
+        <div class="col-md-4 mb-3"><label class="form-label">Priority</label><input type="number" name="priority" class="form-control" min="0" max="1000" value="<%= promotion?.priority ?? 10 %>"></div>
+      </div>
+      <div class="mb-3"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="2"><%= promotion?.description || '' %></textarea></div>
+      <div class="mb-3"><label class="form-label">Promotion Image</label><input type="file" name="promotion_image" class="form-control" accept="image/png,image/jpeg,image/webp" <%= promotion?.id ? '' : 'required' %>><% if (promotion?.image_url) { %><div class="mt-2"><img src="<%= promotion.image_url %>" class="rounded" style="max-width:320px;max-height:200px;object-fit:contain;"></div><% } %></div>
+      <div class="row">
+        <div class="col-md-4 mb-3"><label class="form-label">Redirect Type</label><select name="redirect_type" class="form-select"><option value="external_url" <%= promotion?.redirect_type === 'external_url' ? 'selected' : '' %>>External URL</option><option value="internal_route" <%= promotion?.redirect_type === 'internal_route' ? 'selected' : '' %>>Internal Route</option><option value="none" <%= promotion?.redirect_type === 'none' ? 'selected' : '' %>>No Redirect</option></select></div>
+        <div class="col-md-8 mb-3"><label class="form-label">Redirect Value</label><input name="redirect_value" class="form-control" value="<%= promotion?.redirect_value || '' %>" placeholder="https://example.com or /downloads"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3"><label class="form-label">Starts At</label><input type="datetime-local" name="starts_at" class="form-control" value="<%= toInput(promotion?.starts_at) %>" required></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Ends At</label><input type="datetime-local" name="ends_at" class="form-control" value="<%= toInput(promotion?.ends_at) %>" required></div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 mb-3"><label class="form-label">Audience</label><select name="target_audience" class="form-select"><% ['all','guest','logged_in','free','premium'].forEach(v => { %><option value="<%= v %>" <%= promotion?.target_audience === v ? 'selected' : '' %>><%= v %></option><% }) %></select></div>
+        <div class="col-md-3 mb-3"><label class="form-label">Per User / Day</label><input type="number" name="per_user_daily_limit" class="form-control" min="1" max="50" value="<%= promotion?.per_user_daily_limit ?? 1 %>"></div>
+        <div class="col-md-3 mb-3"><label class="form-label">Cooldown Minutes</label><input type="number" name="cooldown_minutes" class="form-control" min="0" value="<%= promotion?.cooldown_minutes ?? 720 %>"></div>
+        <div class="col-md-3 mb-3"><label class="form-label">Close Delay Seconds</label><input type="number" name="close_delay_seconds" class="form-control" min="0" max="30" value="<%= promotion?.close_delay_seconds ?? 0 %>"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3"><label class="form-label">Global Daily Limit</label><input type="number" name="global_daily_limit" class="form-control" min="0" value="<%= promotion?.global_daily_limit ?? 0 %>"><small class="form-hint">0 = unlimited</small></div>
+        <div class="col-md-4 mb-3"><label class="form-label">Total Impression Limit</label><input type="number" name="total_impression_limit" class="form-control" min="0" value="<%= promotion?.total_impression_limit ?? 0 %>"><small class="form-hint">0 = unlimited</small></div>
+        <div class="col-md-4 mb-3"><label class="form-label">Status</label><select name="is_active" class="form-select"><option value="true" <%= promotion?.is_active !== false ? 'selected' : '' %>>Active</option><option value="false" <%= promotion?.is_active === false ? 'selected' : '' %>>Inactive</option></select></div>
+      </div>
+      <div class="d-flex gap-2"><button class="btn btn-primary"><%= promotion?.id ? 'Update Promotion' : 'Create Promotion' %></button><a href="/admin/promotions" class="btn btn-outline-secondary">Cancel</a></div>
+    </form>
+  </div>
+</div>

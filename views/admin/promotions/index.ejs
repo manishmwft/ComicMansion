@@ -1,0 +1,40 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-1">In-App Promotions</h2>
+    <div class="text-muted">Startup campaigns, frequency rules, impressions, and clicks.</div>
+  </div>
+  <a href="/admin/promotions/add" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Add Promotion</a>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th>Promotion</th><th>Schedule</th><th>Audience</th><th>Frequency</th><th>Performance</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        <% if (!promotions.length) { %>
+          <tr><td colspan="7" class="text-center py-5 text-muted">No promotions created yet.</td></tr>
+        <% } %>
+        <% promotions.forEach(promotion => { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <img src="<%= promotion.image_url %>" alt="" class="rounded" style="width:72px;height:54px;object-fit:cover;">
+                <div><strong><%= promotion.title %></strong><div class="text-muted small"><%= promotion.redirect_type %></div></div>
+              </div>
+            </td>
+            <td class="small"><%= new Date(promotion.starts_at).toLocaleString() %><br>to <%= new Date(promotion.ends_at).toLocaleString() %></td>
+            <td><span class="badge bg-azure-lt"><%= promotion.target_audience %></span></td>
+            <td class="small"><%= promotion.per_user_daily_limit %>/day<br><%= promotion.cooldown_minutes %> min cooldown</td>
+            <td class="small"><strong><%= promotion.total_impressions %></strong> views<br><strong><%= promotion.total_clicks %></strong> clicks</td>
+            <td><span class="badge <%= promotion.is_active ? 'bg-green-lt' : 'bg-secondary-lt' %>"><%= promotion.is_active ? 'Active' : 'Inactive' %></span></td>
+            <td class="text-end">
+              <a href="/admin/promotions/<%= promotion.id %>/analytics" class="btn btn-sm btn-outline-info">Analytics</a>
+              <a href="/admin/promotions/edit/<%= promotion.id %>" class="btn btn-sm btn-outline-warning">Edit</a>
+              <form method="POST" action="/admin/promotions/toggle/<%= promotion.id %>" class="d-inline"><button class="btn btn-sm btn-outline-secondary"><%= promotion.is_active ? 'Disable' : 'Enable' %></button></form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

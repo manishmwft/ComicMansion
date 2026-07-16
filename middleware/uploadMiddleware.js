@@ -21,6 +21,9 @@ const getUploadFolder = (fieldname) => {
   if (fieldname === "pages" || fieldname === "page") {
     return "public/uploads/pages";
   }
+  if (fieldname === "promotion_image") {
+    return "public/uploads/promotions";
+  }
 
   return "public/uploads/misc";
 };

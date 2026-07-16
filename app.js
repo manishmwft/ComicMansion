@@ -22,6 +22,8 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const discoveryRoutes = require("./routes/discoveryRoutes");
 const coinPackageRoutes = require("./routes/coinPackageRoutes");
 const couponRoutes = require("./routes/couponRoutes");
+const promotionRoutes =
+  require("./routes/promotionRoutes");
 const {
   helmetMiddleware,
   hppMiddleware,
@@ -65,16 +67,29 @@ function isLocalFlutterWebOrigin(origin) {
 
 const corsOptions = {
   origin(origin, callback) {
-    // Allow requests without an Origin header:
-    // Flutter Android/iOS, Postman, server-to-server requests.
-    if (!origin) {
+    const normalizedOrigin =
+      typeof origin === "string"
+        ? origin.trim().replace(/\/+$/, "")
+        : "";
+  
+    // Allow requests that have no browser Origin header.
+    // Examples: Flutter Android/iOS, Postman, curl,
+    // server-to-server requests.
+    if (!normalizedOrigin) {
       return callback(null, true);
     }
-
-    const normalizedOrigin =
-      String(origin).replace(/\/+$/, "");
-
-    // Allow configured production domains.
+  
+    // Some mobile WebViews, local files, and sandboxed clients
+    // send the literal Origin value "null".
+    //
+    // Allow it during local development.
+    if (
+      normalizedOrigin === "null" &&
+      process.env.NODE_ENV !== "production"
+    ) {
+      return callback(null, true);
+    }
+  
     if (
       configuredOrigins.includes(
         normalizedOrigin
@@ -82,8 +97,7 @@ const corsOptions = {
     ) {
       return callback(null, true);
     }
-
-    // Allow Flutter Web development from any localhost port.
+  
     if (
       isLocalFlutterWebOrigin(
         normalizedOrigin
@@ -91,20 +105,19 @@ const corsOptions = {
     ) {
       return callback(null, true);
     }
-
+  
     console.warn(
       "CORS BLOCKED ORIGIN:",
       normalizedOrigin
     );
-
+  
     const error =
       new Error("Not allowed by CORS");
-
+  
     error.status = 403;
-
+  
     return callback(error);
   },
-
   credentials: true,
 
   methods: [
@@ -253,6 +266,10 @@ app.use("/analytics", analyticsRoutes);
 app.use("/discovery", discoveryRoutes);
 app.use("/coin-packages", coinPackageRoutes);
 app.use("/coupons", couponRoutes);
+app.use(
+  "/promotions",
+  promotionRoutes
+);
 
 
 

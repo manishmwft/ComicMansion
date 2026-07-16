@@ -5,6 +5,9 @@
   const upload = require("../middleware/uploadMiddleware");
   const optimizeUploadedImages = require("../middleware/optimizeUploadMiddleware");
   const adminRevenueController = require("../controllers/adminRevenueController");
+  const adminPromotionController =
+  require("../controllers/adminPromotionController");
+  
 
   const adminCoinPackageController =
   require("../controllers/adminCoinPackageController");
@@ -169,6 +172,45 @@
   router.post(
     "/coin-packages/delete/:id",
     adminCoinPackageController.remove
+  );
+
+  router.get(
+    "/promotions",
+    adminPromotionController.index
+  );
+  
+  router.get(
+    "/promotions/add",
+    adminPromotionController.form
+  );
+  
+  router.post(
+    "/promotions/add",
+    upload.single("promotion_image"),
+    optimizeUploadedImages,
+    adminPromotionController.create
+  );
+  
+  router.get(
+    "/promotions/edit/:id",
+    adminPromotionController.form
+  );
+  
+  router.post(
+    "/promotions/edit/:id",
+    upload.single("promotion_image"),
+    optimizeUploadedImages,
+    adminPromotionController.update
+  );
+  
+  router.post(
+    "/promotions/toggle/:id",
+    adminPromotionController.toggle
+  );
+  
+  router.get(
+    "/promotions/:id/analytics",
+    adminPromotionController.analytics
   );
   
   // =============================

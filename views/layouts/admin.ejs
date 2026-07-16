@@ -632,8 +632,22 @@ body.km-sidebar-collapsed .km-logo img {
                 <a class="nav-link <%= currentPath === '/admin/coupons' ? 'active' : '' %>" href="/admin/coupons">
                   <span class="nav-link-title">Coupons</span>
                 </a>
+                
               </div>
             </li>
+
+            <a
+  class="nav-link <%= currentPath === '/admin/promotions' ? 'active' : '' %>"
+  href="/admin/promotions"
+>
+  <span class="nav-link-icon">
+    <i class="bi bi-megaphone-fill"></i>
+  </span>
+
+  <span class="nav-link-title">
+    In-App Promotions
+  </span>
+</a>
 
           </ul>
         </div>
